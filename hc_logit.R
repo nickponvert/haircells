@@ -89,3 +89,65 @@ lines(newdata6$DIST, newdata6$PredictedProb, lty="solid", col="black")
 lines(newdata6$DIST, newdata6$UL, lty="dashed", col="black")
 lines(newdata6$DIST, newdata6$LL, lty="dashed", col="black")
 
+##################################################################
+##################################################################
+
+#Lets use Apical Diameter as the factor now
+
+
+newlm <- glm(KINOB ~ APCLD, data=lr, family="binomial")
+
+newdata5 <- with(lr, data.frame(APCLD=seq(from=min(APCLD), to=max(APCLD), length.out=100)))
+newdata6 <- cbind(newdata5, predict(newlm, newdata = newdata5, type = "link", se = TRUE))
+newdata6 <- within(newdata6, {
+                       PredictedProb <- plogis(fit)
+                       LL <- plogis(fit - (1.96 * se.fit))
+                       UL <- plogis(fit + (1.96 * se.fit))
+})
+plot(newdata6$APCLD, newdata6$PredictedProb, type='n', main="logit(Kinocilium Bulb Presence ~ Apical Diameter)", xlab="Apical Diameter", ylab="Predicted Probability of Kinocilium Bulb")
+#polygon(c(rev(newx), newx), c(rev(newdata6$UL), newdata6$LL), col="grey80", border=NA) 
+lines(newdata6$APCLD, newdata6$PredictedProb, lty="solid", col="black")
+lines(newdata6$APCLD, newdata6$UL, lty="dashed", col="black")
+lines(newdata6$APCLD, newdata6$LL, lty="dashed", col="black")
+
+########################################################################
+########################################################################
+#Lets Look at the relationship between Distance and taller kinocilia
+
+newlm <- glm(KINOT ~ DIST, data=lr, family="binomial")
+
+newdata5 <- with(lr, data.frame(DIST=seq(from=min(DIST), to=max(DIST), length.out=100)))
+newdata6 <- cbind(newdata5, predict(newlm, newdata = newdata5, type = "link", se = TRUE))
+newdata6 <- within(newdata6, {
+                       PredictedProb <- plogis(fit)
+                       LL <- plogis(fit - (1.96 * se.fit))
+                       UL <- plogis(fit + (1.96 * se.fit))
+})
+plot(newdata6$DIST, newdata6$PredictedProb, type='n', main="logit(Taller Kinocilium ~ Distance)", xlab="Distance to Perimeter", ylab="Predicted Probability of Taller Kinocilium")
+#polygon(c(rev(newx), newx), c(rev(newdata6$UL), newdata6$LL), col="grey80", border=NA) 
+lines(newdata6$DIST, newdata6$PredictedProb, lty="solid", col="black")
+lines(newdata6$DIST, newdata6$UL, lty="dashed", col="black")
+lines(newdata6$DIST, newdata6$LL, lty="dashed", col="black")
+
+######################################################################
+######################################################################
+#Now, the relationship between apical diameter and taller kinocilia
+
+newlm <- glm(KINOT ~ APCLD, data=lr, family="binomial")
+
+newdata5 <- with(lr, data.frame(APCLD=seq(from=min(APCLD), to=max(APCLD), length.out=100)))
+newdata6 <- cbind(newdata5, predict(newlm, newdata = newdata5, type = "link", se = TRUE))
+newdata6 <- within(newdata6, {
+                       PredictedProb <- plogis(fit)
+                       LL <- plogis(fit - (1.96 * se.fit))
+                       UL <- plogis(fit + (1.96 * se.fit))
+})
+plot(newdata6$APCLD, newdata6$PredictedProb, type='n', main="logit(Taller Kinocilium ~ Apical Diameter)", xlab="Apical Diameter", ylab="Predicted Probability of Taller Kinocilium")
+#polygon(c(rev(newx), newx), c(rev(newdata6$UL), newdata6$LL), col="grey80", border=NA) 
+lines(newdata6$APCLD, newdata6$PredictedProb, lty="solid", col="black")
+lines(newdata6$APCLD, newdata6$UL, lty="dashed", col="black")
+lines(newdata6$APCLD, newdata6$LL, lty="dashed", col="black")
+
+###############################################################################
+###############################################################################
+#TODO: What is the relationship between Apical Diameter and Distance? (use glm)
