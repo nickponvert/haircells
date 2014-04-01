@@ -4,7 +4,7 @@
 
 library(ggplot2)
 library(aod)
-hc <- read.csv("~/Desktop/Haircells/haircells.csv")
+hc <- read.csv("~/Desktop/Haircell_Data/haircells.csv")
 lr <- subset(hc, select=c(APCLD, DIST, KINOB, KINOT, CLASS))
 lr <- na.omit(lr)
 ad <- lr$APCLD
@@ -66,4 +66,26 @@ plot(newdata4$DIST, newdata4$PredictedProb, type='n')
 lines(newdata4$DIST, newdata4$PredictedProb, lty="solid", col="black")
 lines(newdata4$DIST, newdata4$UL, lty="dashed", col="black")
 lines(newdata4$DIST, newdata4$LL, lty="dashed", col="black")
+
+
+##################################################################
+##################################################################
+
+
+#Lets do a new logit without the Apical Diameter component and see how that influences the results
+
+newlm <- glm(KINOB ~ DIST, data=lr, family="binomial")
+
+newdata5 <- with(lr, data.frame(DIST=seq(from=min(DIST), to=max(DIST), length.out=100)))
+newdata6 <- cbind(newdata5, predict(newlm, newdata = newdata5, type = "link", se = TRUE))
+newdata6 <- within(newdata6, {
+                       PredictedProb <- plogis(fit)
+                       LL <- plogis(fit - (1.96 * se.fit))
+                       UL <- plogis(fit + (1.96 * se.fit))
+})
+plot(newdata6$DIST, newdata6$PredictedProb, type='n', main="logit(Kinocilium Bulb Presence ~ Distance)", xlab="Distance to Perimeter", ylab="Predicted Probability of Kinocilium Bulb")
+#polygon(c(rev(newx), newx), c(rev(newdata6$UL), newdata6$LL), col="grey80", border=NA) 
+lines(newdata6$DIST, newdata6$PredictedProb, lty="solid", col="black")
+lines(newdata6$DIST, newdata6$UL, lty="dashed", col="black")
+lines(newdata6$DIST, newdata6$LL, lty="dashed", col="black")
 
