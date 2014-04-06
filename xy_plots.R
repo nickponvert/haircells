@@ -1,5 +1,5 @@
 
-hc <- read.csv("~/Desktop/Haircells/haircells.csv")
+hc <- read.csv("~/Current/DataHaircell/haircells.csv")
 
 xy <- subset(hc, select=c(XLOC, YLOC, CLASS, DIST, APCLD))
 xy <- na.omit(xy)
